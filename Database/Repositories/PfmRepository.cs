@@ -129,6 +129,12 @@ namespace pfm.Database.Repositories
             await _dbContext.SaveChangesAsync();
             return await TransactionGet(transaction.Id);
         }
+        public async Task<TransactionEntity> CreateTransactions(List<TransactionEntity> transactions)
+        {
+            await _dbContext.AddRangeAsync(transactions.ToArray());
+            await _dbContext.SaveChangesAsync();
+            return null;
+        }
         public async Task<CategoryEntity> CreateCategory(CategoryEntity category){
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();

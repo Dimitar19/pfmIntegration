@@ -16,6 +16,7 @@ namespace pfm.Database.Repositories
         Task<List<TransactionEntity>> GetTransactions();
         Task<List<CategoryEntity>> GetCategories();
         Task<TransactionEntity> CreateTransaction(TransactionEntity transaction);
+        Task<TransactionEntity> CreateTransactions(List<TransactionEntity> transactions);
         Task<CategoryEntity> CreateCategory(CategoryEntity category);
         Task<CategoryEntity> UpdateCategory(CategoryEntity category);
         Task<TransactionEntity> UpdateTransaction(TransactionEntity transaction);

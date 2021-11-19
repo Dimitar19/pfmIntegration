@@ -45,6 +45,7 @@ namespace pfm.Services
         {
             string [] colFields;
             List<Transaction> ret = new List<Transaction>();
+            List<TransactionEntity> toAdd = new List<TransactionEntity>();
 
             using(TextFieldParser csvReader = new TextFieldParser(file.OpenReadStream()))
             {
@@ -73,9 +74,10 @@ namespace pfm.Services
                     transaction.Kind = (TransactionKind)Enum.Parse(typeof(TransactionKind), fieldData[8], true);
 
                     var createProduct = _mapper.Map<TransactionEntity>(transaction);
-                    var productCreated = await _pfmRepository.CreateTransaction(createProduct);
-                    ret.Add(_mapper.Map<Transaction>(productCreated));
+                    toAdd.Add(createProduct);//var productCreated = await _pfmRepository.CreateTransaction(createProduct);
+                    ret.Add(_mapper.Map<Transaction>(transaction));//ret.Add(_mapper.Map<Transaction>(productCreated));
                 }
+                await _pfmRepository.CreateTransactions(toAdd);
                 return ret;
             }
         }
@@ -161,9 +163,9 @@ namespace pfm.Services
         {
             List<CategoryEntity> categories = await _pfmRepository.GetCategories();
             
-            if (string.IsNullOrEmpty(catCode))
-                categories = categories.Where(c=>string.IsNullOrEmpty(c.ParentCode)).ToList();
-            else
+            if (!string.IsNullOrEmpty(catCode))
+                //categories = categories.Where(c=>string.IsNullOrEmpty(c.ParentCode)).ToList();
+            //else
                 categories = categories.Where(c=>catCode.Equals(c.ParentCode)).ToList();
             List<SpendingInCategory> spendingsByCategory = new List<SpendingInCategory>();
             foreach (var category in categories) {
@@ -176,12 +178,14 @@ namespace pfm.Services
                 if (direction != null)
                     transactions = transactions.Where(t=>t.Direction.Equals(direction)).ToList();
                 int count = transactions.Count();
-                double? ammount = transactions.Sum(t=>t.Amount);
-                spendingsByCategory.Add(new SpendingInCategory{
-                    Catcode = category.Code,
-                    Ammount = ammount,
-                    Count = count
-                });
+                if (count > 0) {
+                    double? ammount = transactions.Sum(t=>t.Amount);
+                    spendingsByCategory.Add(new SpendingInCategory{
+                        Catcode = category.Code,
+                        Ammount = ammount,
+                        Count = count
+                    });
+                }
             }
             return new SpendingsByCategory{
                 Groups = spendingsByCategory
