@@ -47,7 +47,7 @@ namespace pfm.Database.Repositories
             var total = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(total * 1.0 / pageSize);
             string criteria;
-            if (sortBy.Equals("beneficiary-name"))
+            if (!string.IsNullOrEmpty(sortBy) && sortBy.Equals("beneficiary-name"))
                 criteria = "beneficiaryName";
             else
                 criteria = sortBy;
