@@ -86,7 +86,7 @@ namespace pfm.Services
             if (!string.IsNullOrEmpty(parentId))
                 categoriesList = categoriesList.Where(c => parentId.Equals(c.ParentCode)).ToList();
             CategoryList categories = new CategoryList {
-                Categories = _mapper.Map<List<Category>>(categoriesList)
+                Items = _mapper.Map<List<Category>>(categoriesList)
             };
             return categories;
         }
