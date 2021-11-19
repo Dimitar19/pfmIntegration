@@ -199,7 +199,7 @@ namespace pfm.Services
             var category = await _pfmRepository.CategoryGet(command.CatCode);
             if (transaction != null && category != null)
             {
-                transaction.Catcode = command.CatCode;
+                transaction.CatCode = command.CatCode;
                 transaction.Category = category;
                 var res = await _pfmRepository.UpdateTransaction(transaction);
                 return _mapper.Map<Transaction>(res);
@@ -218,7 +218,7 @@ namespace pfm.Services
             List<SpendingInCategory> spendingsByCategory = new List<SpendingInCategory>();
             foreach (var category in categories) {
                 List<TransactionEntity> transactions = await _pfmRepository.GetTransactions();
-                transactions = transactions.Where(t=>category.Code.Equals(t.Catcode)).ToList();
+                transactions = transactions.Where(t=>category.Code.Equals(t.CatCode)).ToList();
                 if (startDate != null)
                     transactions = transactions.Where(t=>t.Date >= startDate).ToList();
                 if (endDate != null)

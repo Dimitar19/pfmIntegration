@@ -15,7 +15,7 @@ namespace pfm.Database.Entities
         public string Currency { get; set; }
         public MCC? Mcc { get; set; }
         public TransactionKind Kind { get; set; }
-        public string Catcode { get; set; }
+        public string CatCode { get; set; }
         public CategoryEntity Category { get; set; }
         public List<TransactionSplitEntity> Splits { get; set; }
     }
