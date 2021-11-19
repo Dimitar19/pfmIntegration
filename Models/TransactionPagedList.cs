@@ -15,6 +15,6 @@ namespace pfm.Models
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public SortOrder SortOrder { get; set; }
         public string SortBy { get; set; }
-        public TransactionWithSplits[] Splits { get; set; }
+        public TransactionWithSplits[] Items { get; set; }
     }
 }
