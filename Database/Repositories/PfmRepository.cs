@@ -70,7 +70,7 @@ namespace pfm.Database.Repositories
                     foreach (TransactionSplitEntity split in check)
                     {
                         splits.Add(new SingleCategorySplit{
-                            CatCode = split.CatCode,
+                            Catcode = split.Catcode,
                             Amount = split.Amount
                         });
                     }
@@ -84,7 +84,7 @@ namespace pfm.Database.Repositories
                         Currency = el.Currency,
                         Mcc = el.Mcc,
                         Kind = el.Kind,
-                        CatCode = el.CatCode,
+                        Catcode = el.Catcode,
                         Splits = splits.ToArray()
                     });
                 }
@@ -100,7 +100,7 @@ namespace pfm.Database.Repositories
                         Currency = el.Currency,
                         Mcc = el.Mcc,
                         Kind = el.Kind,
-                        CatCode = el.CatCode,
+                        Catcode = el.Catcode,
                         Splits = new List<SingleCategorySplit>().ToArray()
                     });
                 }
@@ -156,7 +156,7 @@ namespace pfm.Database.Repositories
         {
             await _dbContext.SplitTransactions.AddAsync(transactionSplit);
             await _dbContext.SaveChangesAsync();
-            var res = await _dbContext.SplitTransactions.FirstOrDefaultAsync(x => x.Amount == transactionSplit.Amount && transactionSplit.CatCode.Equals(x.CatCode));
+            var res = await _dbContext.SplitTransactions.FirstOrDefaultAsync(x => x.Amount == transactionSplit.Amount && transactionSplit.Catcode.Equals(x.Catcode));
             return res;
         }
         public async Task<List<TransactionSplitEntity>> GetTransactionSplits()

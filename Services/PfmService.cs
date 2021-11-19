@@ -199,7 +199,7 @@ namespace pfm.Services
             var category = await _pfmRepository.CategoryGet(command.CatCode);
             if (transaction != null && category != null)
             {
-                transaction.CatCode = command.CatCode;
+                transaction.Catcode = command.CatCode;
                 transaction.Category = category;
                 var res = await _pfmRepository.UpdateTransaction(transaction);
                 return _mapper.Map<Transaction>(res);
@@ -218,7 +218,7 @@ namespace pfm.Services
             List<SpendingInCategory> spendingsByCategory = new List<SpendingInCategory>();
             foreach (var category in categories) {
                 List<TransactionEntity> transactions = await _pfmRepository.GetTransactions();
-                transactions = transactions.Where(t=>category.Code.Equals(t.CatCode)).ToList();
+                transactions = transactions.Where(t=>category.Code.Equals(t.Catcode)).ToList();
                 if (startDate != null)
                     transactions = transactions.Where(t=>t.Date >= startDate).ToList();
                 if (endDate != null)
@@ -228,7 +228,7 @@ namespace pfm.Services
                 int count = transactions.Count();
                 double? ammount = transactions.Sum(t=>t.Amount);
                 spendingsByCategory.Add(new SpendingInCategory{
-                    CatCode = category.Code,
+                    Catcode = category.Code,
                     Ammount = ammount,
                     Count = count
                 });
@@ -245,7 +245,7 @@ namespace pfm.Services
                 double check = 0;
                 foreach (SingleCategorySplit split in command.Splits) {
                     check += split.Amount;
-                    var category = await _pfmRepository.CategoryGet(split.CatCode);
+                    var category = await _pfmRepository.CategoryGet(split.Catcode);
                     if (category == null)
                         return null;
                 }
@@ -259,7 +259,7 @@ namespace pfm.Services
                 {
                     TransactionSplitEntity transactionSplit = _mapper.Map<TransactionSplitEntity>(split);
                     transactionSplit.TransactionId = id;
-                    transactionSplit.Category = await _pfmRepository.CategoryGet(split.CatCode);
+                    transactionSplit.Category = await _pfmRepository.CategoryGet(split.Catcode);
                     transactionSplit.ParentTransaction = await _pfmRepository.TransactionGet(id);
                     if (transaction.Splits == null)
                         transaction.Splits = new List<TransactionSplitEntity>();

@@ -17,7 +17,7 @@ namespace pfm.Models
         public MCC? Mcc { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TransactionKind Kind { get; set; }
-        public string CatCode { get; set; }
+        public string Catcode { get; set; }
         public SingleCategorySplit[] Splits { get; set; }
     }
 }

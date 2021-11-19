@@ -5,7 +5,7 @@ namespace pfm.Models
     public class SingleCategorySplit
     {
         [Required]
-        public string CatCode { get; set; }
+        public string Catcode { get; set; }
         [Required]
         public double Amount { get; set; }
     }

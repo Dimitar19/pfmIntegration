@@ -19,6 +19,6 @@ namespace pfm.Models
         public MCC? Mcc { get; set; }
         [Required]
         public TransactionKind? Kind { get; set; }
-        public string CatCode { get; set; }
+        public string Catcode { get; set; }
     }
 }
