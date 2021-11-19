@@ -25,7 +25,7 @@ namespace pfm.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategories([FromQuery] string parentId){
+        public async Task<IActionResult> GetCategories([FromQuery(Name ="parent-id")] string parentId){
             var returnList = await _pfmService.GetCategories(parentId);
             return Ok(returnList);
         }

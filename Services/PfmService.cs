@@ -26,9 +26,7 @@ namespace pfm.Services
             List<TransactionKind> transactionKinds = new List<TransactionKind>();
             if (!string.IsNullOrEmpty(transactionKind))
                 foreach (var kind in transactionKind.Split(','))
-                {
                     transactionKinds.Add((TransactionKind)Enum.Parse(typeof(TransactionKind), kind, true));
-                }
             var pagedSortedList = await _pfmRepository.GetTransactions(transactionKinds, startDate, endDate, page, pageSize, sortBy, sortOrder);
             return _mapper.Map<TransactionPagedList<Transaction>>(pagedSortedList);
         }

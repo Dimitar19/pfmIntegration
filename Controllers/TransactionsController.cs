@@ -21,7 +21,7 @@ namespace pfm.Controllers{
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTransactions([FromQuery] string transactionKind, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string sortBy, [FromQuery] SortOrder sortOrder){
+        public async Task<IActionResult> GetTransactions([FromQuery(Name ="transaction-kind")] string transactionKind, [FromQuery(Name ="start-date")] DateTime? startDate, [FromQuery(Name ="end-date")] DateTime? endDate, [FromQuery] int? page, [FromQuery(Name ="page-size")] int? pageSize, [FromQuery(Name ="sort-by")] string sortBy, [FromQuery(Name ="sort-order")] SortOrder sortOrder){
             page ??= 1;
             pageSize ??= 10;
             var pagedSortedList = await _pfmService.GetTransactions(transactionKind, startDate, endDate, page.Value, pageSize.Value, sortBy, sortOrder);

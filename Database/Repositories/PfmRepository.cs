@@ -46,12 +46,17 @@ namespace pfm.Database.Repositories
 
             var total = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(total * 1.0 / pageSize);
+            string criteria;
+            if (sortBy.Equals("beneficiary-name"))
+                criteria = "beneficiaryName";
+            else
+                criteria = sortBy;
 
             if (!string.IsNullOrEmpty(sortBy))
                 if (sortOrder == SortOrder.desc)
-                    query = query.OrderByDescending(sortBy, p => p.Id);
+                    query = query.OrderByDescending(criteria, p => p.Id);
                 else
-                    query = query.OrderBy(sortBy, p => p.Id);
+                    query = query.OrderBy(criteria, p => p.Id);
             else
                 if (sortOrder == SortOrder.desc)
                     query = query.OrderByDescending(p => p.Id);
