@@ -162,7 +162,7 @@ namespace pfm.Services
                             category.ParentCode = null;
                             category.ParentCategory = null;
                             var check = await _pfmRepository.CategoryGet(category.ParentCode);
-                            if (check != null)
+                            if (check == null)
                                 res = await _pfmRepository.CreateCategory(category);
                         }
                         else 
