@@ -113,7 +113,7 @@ namespace pfm.Database.Repositories
                 SortBy = sortBy,
                 SortOrder = sortOrder,
                 TotalCount = total,
-                TotalPages = totalPages,
+                //TotalPages = totalPages,
                 Items = transactions.ToArray()
             };
         }

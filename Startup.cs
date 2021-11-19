@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Npgsql;
 using pfm.Database;
 using pfm.Database.Repositories;
+using pfm.Models;
 using pfm.Services;
 
 namespace pfm
@@ -44,6 +45,10 @@ namespace pfm
             services.AddScoped<IPfmRepository, PfmRepository>();
             services.AddScoped<IPfmService, PfmService>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            // services.AddControllers().AddJsonOptions(options => { 
+            //     options.JsonSerializerOptions.PropertyNamingPolicy = 
+            //         KebabCaseNamingPolicy.Instance;
+            // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

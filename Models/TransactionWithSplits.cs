@@ -6,6 +6,7 @@ namespace pfm.Models
     public class TransactionWithSplits
     {
         public string Id { get; set; }
+        [JsonPropertyName("beneficiary-name")]
         public string BeneficiaryName { get; set; }
         public DateTime Date { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -14,7 +15,7 @@ namespace pfm.Models
         public string Description { get; set; }
         public string Currency { get; set; }
         public MCC? Mcc { get; set; }
-        //[JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public TransactionKind Kind { get; set; }
         public string CatCode { get; set; }
         public SingleCategorySplit[] Splits { get; set; }
