@@ -30,54 +30,6 @@ namespace pfm.Services
                     transactionKinds.Add((TransactionKind)Enum.Parse(typeof(TransactionKind), kind, true));
                 }
             var pagedSortedList = await _pfmRepository.GetTransactions(transactionKinds, startDate, endDate, page, pageSize, sortBy, sortOrder);
-
-
-
-
-            // //var query = _dbContext.Transactions.AsQueryable();
-            // var pom = await _pfmRepository.GetTransactions();
-            // var transactions = pom.AsQueryable();
-            // var query = transactions.AsQueryable();
-
-
-            // if(transactionKinds.Count > 0)
-            //     transactions = transactions.Where(t=>transactionKinds.Contains(t.Kind));//query = query.Where(s => transactionKinds.Contains(s.Kind));
-            // if(startDate != null)
-            //     transactions = transactions.Where(t=>t.Date >= startDate);//query = query.Where(s=>s.Date >= startDate);
-            // if(endDate != null)
-            //     transactions = transactions.Where(t=>t.Date <= endDate);//query = query.Where(s=>s.Date <= endDate);
-
-            // var total = transactions.Count();//var total = await query.CountAsync();
-            // var totalPages = (int)Math.Ceiling(total * 1.0 / pageSize);
-
-            // if (!string.IsNullOrEmpty(sortBy))
-            //     if (sortOrder == SortOrder.Desc)
-            //         transactions.OrderByDescending(sortBy, t=>t.Id);//query = query.OrderByDescending(sortBy, p => p.Id);
-            //     else
-            //         query = query.OrderBy(sortBy, p => p.Id);
-            // else
-            //     if (sortOrder == SortOrder.Desc)
-            //         query = query.OrderByDescending(p => p.Id);
-            //     else
-            //         query = query.OrderBy(p => p.Id);
-
-            // query = query.Skip((page - 1) * pageSize).Take(pageSize);
-
-            // return new TransactionPagedList<TransactionEntity>
-            // {
-            //     Page = page,
-            //     PageSize = pageSize,
-            //     SortBy = sortBy,
-            //     SortOrder = sortOrder,
-            //     TotalCount = total,
-            //     TotalPages = totalPages,
-            //     Items = await query.ToListAsync(),
-            // };
-
-
-
-
-
             return _mapper.Map<TransactionPagedList<Transaction>>(pagedSortedList);
         }
         public async Task<CategoryList> GetCategories(string parentId)
