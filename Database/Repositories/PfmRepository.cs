@@ -45,9 +45,15 @@ namespace pfm.Database.Repositories
                 query = query.Where(s=>s.Date <= endDate);
 
             var total = await query.CountAsync();
+            if (pageSize > total)
+                pageSize = total;
             var totalPages = (int)Math.Ceiling(total * 1.0 / pageSize);
             string criteria;
-            if (!string.IsNullOrEmpty(sortBy) && sortBy.Equals("beneficiary-name"))
+            if (string.IsNullOrEmpty(sortBy)){
+                sortBy = "id";
+                criteria = sortBy;
+            }
+            else if (sortBy.Equals("beneficiary-name"))
                 criteria = "beneficiaryName";
             else
                 criteria = sortBy;
@@ -82,7 +88,7 @@ namespace pfm.Database.Repositories
                     transactions.Add(new TransactionWithSplits{
                         Id = el.Id,
                         BeneficiaryName = el.BeneficiaryName,
-                        Date = el.Date,
+                        Date = el.Date.ToString(),
                         Direction = el.Direction,
                         Amount = el.Amount,
                         Description = el.Description,
@@ -98,7 +104,7 @@ namespace pfm.Database.Repositories
                     transactions.Add(new TransactionWithSplits{
                         Id = el.Id,
                         BeneficiaryName = el.BeneficiaryName,
-                        Date = el.Date,
+                        Date = el.Date.ToString(),
                         Direction = el.Direction,
                         Amount = el.Amount,
                         Description = el.Description,

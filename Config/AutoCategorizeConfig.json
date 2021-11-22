@@ -1,0 +1,12 @@
+[
+    {
+        "title": "When beneficiary name contains 'chevron' or 'shell' categorize transction as 4 (Auto & Transport / Gas & Fuel)",
+        "catcode": "4",
+        "predicate": "beneficiaryName == \"chevron\" || beneficiaryName == \"shell\""
+    },
+    {
+        "title": "When mcc is 5811 (Caterers) categorize transaction as 39 (Food & Dining / Restaurants)",
+        "catcode": "39",
+        "predicate": "mcc = 5811"
+    }
+]

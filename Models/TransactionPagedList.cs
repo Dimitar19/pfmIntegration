@@ -8,12 +8,16 @@ namespace pfm.Models
     public class TransactionPagedList<T>
     {
         [JsonPropertyName("total-count")]
+        [Range(minimum:0, maximum: Int64.MaxValue)]
         public int TotalCount { get; set; }
         [Range(1,100)]
         [JsonPropertyName("page-size")]
         public int PageSize { get; set; }
+        [Range(minimum: 1, maximum: Int64.MaxValue)]
         public int Page { get; set; }
-        //public int TotalPages { get; set; }
+        [JsonIgnore]
+        [Range(minimum: 0, maximum: Int64.MaxValue)]
+        public int TotalPages { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         [JsonPropertyName("sort-order")]
         public SortOrder SortOrder { get; set; }

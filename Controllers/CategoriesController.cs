@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using pfm.Models.Exceptions;
 using pfm.Services;
 
 namespace pfm.Controllers
@@ -26,8 +27,14 @@ namespace pfm.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetCategories([FromQuery(Name ="parent-id")] string parentId){
-            var returnList = await _pfmService.GetCategories(parentId);
-            return Ok(returnList);
+            try {
+                var returnList = await _pfmService.GetCategories(parentId);
+                return Ok(returnList);
+            }
+            catch(ErrorException exception)
+            {
+                return BadRequest(exception.ValidationProblem.errors);
+            }
         }
     }
 }

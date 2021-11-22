@@ -5,6 +5,6 @@ namespace pfm.Commands
     public class TransactionCategorizeCommand
     {
         [Required]
-        public string CatCode { get; set; }
+        public string Catcode { get; set; }
     }
 }

@@ -4,6 +4,6 @@ namespace pfm.Models
 {
     public class SpendingsByCategory
     {
-        public List<SpendingInCategory> Groups { get; set; }
+        public SpendingInCategory [] Groups { get; set; }
     }
 }

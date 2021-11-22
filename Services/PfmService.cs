@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +12,8 @@ using pfm.Commands;
 using pfm.Database.Entities;
 using pfm.Database.Repositories;
 using pfm.Models;
+using pfm.Models.Exceptions;
+
 
 namespace pfm.Services
 {
@@ -34,9 +39,26 @@ namespace pfm.Services
         {
             var categoriesList = await _pfmRepository.GetCategories();
             if (!string.IsNullOrEmpty(parentId))
+            {
+                var category = await _pfmRepository.CategoryGet(parentId);
+                if (category == null)
+                {
+                    List<BusinessProblem> businessProblems = new List<BusinessProblem>();
+                    businessProblems.Add(new BusinessProblem{
+                        tag = "parent-id",
+                        error = "not-found",
+                        message = "Category does not exist"
+                    });
+
+                    ValidationProblem vp = new ValidationProblem{
+                        errors = businessProblems.ToArray()
+                    };
+                    throw(new ErrorException(vp));
+                }
                 categoriesList = categoriesList.Where(c => parentId.Equals(c.ParentCode)).ToList();
+            }
             CategoryList categories = new CategoryList {
-                Items = _mapper.Map<List<Category>>(categoriesList)
+                Items = _mapper.Map<List<Category>>(categoriesList).ToArray()
             };
             return categories;
         }
@@ -70,7 +92,10 @@ namespace pfm.Services
                     transaction.Amount = Double.Parse(fieldData[4]);
                     transaction.Description = fieldData[5];
                     transaction.Currency = fieldData[6];
-                    transaction.mcc = null;
+                    if (!string.IsNullOrEmpty(fieldData[7]))
+                        transaction.mcc = (MCC)Enum.Parse(typeof(MCC), fieldData[7], true);
+                    else 
+                        transaction.mcc = null;
                     transaction.Kind = (TransactionKind)Enum.Parse(typeof(TransactionKind), fieldData[8], true);
 
                     var createProduct = _mapper.Map<TransactionEntity>(transaction);
@@ -148,15 +173,39 @@ namespace pfm.Services
         public async Task<Transaction> CategorizeTransaction(string id, TransactionCategorizeCommand command)
         {
             var transaction = await _pfmRepository.TransactionGet(id);;
-            var category = await _pfmRepository.CategoryGet(command.CatCode);
-            if (transaction != null && category != null)
+            if (transaction == null)
             {
-                transaction.CatCode = command.CatCode;
-                transaction.Category = category;
-                var res = await _pfmRepository.UpdateTransaction(transaction);
-                return _mapper.Map<Transaction>(res);
+                List<BusinessProblem> businessProblems = new List<BusinessProblem>();
+                businessProblems.Add(new BusinessProblem{
+                    tag = "id",
+                    error = "id-not-found",
+                    message = "Transaction does not exist"
+                });
+
+                ValidationProblem vp = new ValidationProblem{
+                    errors = businessProblems.ToArray()
+                };
+                throw(new ErrorException(vp));
             }
-            return null;
+            var category = await _pfmRepository.CategoryGet(command.Catcode);
+            if (category == null)
+            {
+                List<BusinessProblem> businessProblems = new List<BusinessProblem>();
+                businessProblems.Add(new BusinessProblem{
+                    tag = "catcode",
+                    error = "not-found",
+                    message = "Category does not exist"
+                });
+
+                ValidationProblem vp = new ValidationProblem{
+                    errors = businessProblems.ToArray()
+                };
+                throw(new ErrorException(vp));
+            }
+            transaction.CatCode = command.Catcode;
+            transaction.Category = category;
+            var res = await _pfmRepository.UpdateTransaction(transaction);
+            return _mapper.Map<Transaction>(res);
         }
 
         public async Task<SpendingsByCategory> GetSpendingAnalytics(string catCode, DateTime? startDate, DateTime? endDate, Directions? direction)
@@ -188,10 +237,10 @@ namespace pfm.Services
                 }
             }
             return new SpendingsByCategory{
-                Groups = spendingsByCategory
+                Groups = spendingsByCategory.ToArray()
             };
         }
-        public async Task<List<TransactionSplit>> SplitTransaction(string id, SplitTransactionCommand command)
+        public async Task<ErrorException> SplitTransaction(string id, SplitTransactionCommand command)
         {
             var transaction = await _pfmRepository.TransactionGet(id);
             if (transaction != null)
@@ -204,7 +253,19 @@ namespace pfm.Services
                         return null;
                 }
                 if (check != transaction.Amount)
-                    return null;
+                {
+                    List<BusinessProblem> businessProblems = new List<BusinessProblem>();
+                    businessProblems.Add(new BusinessProblem{
+                        tag = "splits amount",
+                        error = "splits-amounts-sum",
+                        message = "Split amounts do not equal transaction amount"
+                    });
+
+                    ValidationProblem vp = new ValidationProblem{
+                        errors = businessProblems.ToArray()
+                    };
+                    throw(new ErrorException(vp));
+                }
                 List<TransactionSplit> res = new List<TransactionSplit>();
                 var removed = await _pfmRepository.DeleteTransactionSplits(id);
                 if (transaction.Splits != null)
@@ -222,9 +283,22 @@ namespace pfm.Services
                     res.Add(_mapper.Map<TransactionSplit>(pom));
                 }
                 await _pfmRepository.UpdateTransaction(transaction);
-                return res;
+                return null;
             }
-            return null;
+            else 
+            {
+                List<BusinessProblem> businessProblems = new List<BusinessProblem>();
+                businessProblems.Add(new BusinessProblem{
+                    tag = "id",
+                    error = "id-not-found",
+                    message = "Transaction does not exist"
+                });
+
+                ValidationProblem vp = new ValidationProblem{
+                    errors = businessProblems.ToArray()
+                };
+                throw(new ErrorException(vp));
+            }
         }
     }
 }

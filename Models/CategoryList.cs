@@ -4,6 +4,6 @@ namespace pfm.Models
 {
     public class CategoryList
     {
-        public List<Category> Items { get; set; }
+        public Category [] Items { get; set; }
     }
 }
